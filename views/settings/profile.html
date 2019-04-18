@@ -69,11 +69,15 @@
       <dt>头像设置</dt>
       <dd>
         <form id="form_avatar" action="/settings/profile/avatar" method="post" enctype="multipart/form-data">
-          <img class="avatar" width="150" height="150" src="../{{ user.avatar }}" alt="">
-          <input type="file" name="avatar">
-          <input type="hidden" name="id" value="{{ user._id }}">
+          <div class="form-group">
+            <img class="img-rounded" width="150" height="150" src="../{{ user.avatar }}" alt="">
+          </div>
+          <div class="form-group">
+            <input type="file" name="avatar">
+            <input type="hidden" name="id" value="{{ user._id }}">
+          </div>
           <div>
-            <button class="btn btn-default" type="submit">上传头像</button>
+            <button class="btn btn-success" type="submit">上传头像</button>
           </div>
         </form>
       </dd>

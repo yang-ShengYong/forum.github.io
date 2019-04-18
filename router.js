@@ -1,6 +1,8 @@
 var express = require('express')
 var User = require('./models/user') //用大写好区分
 var md5 = require('blueimp-md5')
+var fs = require('fs')
+var path = require('path')
 
 var router = express.Router()
 
@@ -153,32 +155,29 @@ router.post('/settings/profile/avatar', function (req, res, next) {
   //给id理个发，把"去掉
   id = id.replace(/"/g, "")
 
-  console.log(id)
-
-
   if (Object.keys(req.files).length == 0) {
     return res.status(500).send('头像文件上传失败！')
   }
 
   var avatar = req.files.avatar
 
-  avatar.mv('./public/img/'+id+'.jpg', function (err) {
+  avatar.mv('./public/img/' + id + '.jpg', function (err) {
     if (err) {
       return next(err)
     }
     //把数据库里的avatar改成对应的路径
     User.findByIdAndUpdate(id, {
-      avatar: '../public/img/'+id+'.jpg'
+      avatar: '../public/img/' + id + '.jpg'
     }, function (err, data) {
       if (err) {
-        next(err) 
+        return next(err)
       }
-      console.log(data)
+     
       User.findById(id, function (err, user) {
         if (err) {
-          next(err)
+          return next(err)
         }
-        console.log(id + user)
+        req.session.user = user
         res.render('settings/profile.html', {
           user: user
         })
@@ -187,9 +186,77 @@ router.post('/settings/profile/avatar', function (req, res, next) {
   })
 })
 
-//账户设置
-router.get('/settings/admin', function (req, res) {
-  res.render('settings/admin.html')
+//点击账户设置
+router.get('/settings/admin', function (req, res, next) {
+  var id = req.query.id
+  id = id.replace(/"/g, "")
+
+  User.findById(id, function (err, user) {
+    if (err) {
+      return next(err)
+    }
+    res.render('settings/admin.html', {
+      user: user
+    })
+  })
+})
+
+//修改密码
+router.post('/settings/password', function (req, res, next) {
+  var id = req.body.id
+  id = id.replace(/"/g, "")
+
+  User.findById(id, function (err, user) {
+    if (err) {
+      return next(err)
+    }
+    //把oldPassword取出来，两次MD5加密然后比对
+    var oldPassword = req.body.oldPassword
+    var md5_oldPassword = md5(md5(oldPassword))
+    console.log(user.password)
+    if (md5_oldPassword !== user.password) {
+      return res.status(200).json({
+        err_code: 1,
+        message: 'oldPassword error'
+      })
+    }
+    User.findByIdAndUpdate(id, {
+      password: md5(md5(req.body.newPassword))
+    }, function (err) {
+      if (err) {
+        return next(err)
+      }
+      res.status(200).json({
+        err_code: 0,
+        message: '密码修改成功'
+      })
+    })
+  })
+})
+
+//删除账户
+router.get('/settings/admin/delete', function (req, res, next) {
+  var id = req.query.id
+  id = id.replace(/"/g, "")
+
+  User.deleteOne({
+    _id: id
+  }, function (err, ret) {
+    if (err) {
+      return next(err)
+    }
+    fs.unlink(path.join(__dirname, '/public/img/' + id + '.jpg'), function (err) {
+      if (err) {
+        return next(err)
+      }
+    })
+    req.session.destroy(function (err) {
+      if (err) {
+        return next(err)
+      }
+    })
+    res.redirect('/')
+  })
 })
 
 module.exports = router

@@ -12,7 +12,7 @@
   <div class="main">
     <div class="header">
       <a href="/">
-        <img src="/public/img/logo3.png" alt="">
+        <img src="/public/img/ynodejs.png" alt="">
       </a>
       <h1>用户登录</h1>
     </div>
@@ -42,7 +42,6 @@
     $('#login_form').on('submit', function (e) {
       e.preventDefault()
       var formData = $(this).serialize()
-      console.log(formData)
       $.ajax({
         url: '/login',
         type: 'post',
