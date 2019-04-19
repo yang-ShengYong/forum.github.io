@@ -38,7 +38,7 @@
       </form>
       <ul class="nav navbar-nav navbar-right">
         {{ if user }}
-        <a class="btn btn-success navbar-btn" href="/topics/new">发起</a>
+        <a class="btn btn-success navbar-btn" href="/topic/new?id={{ user._id }}">发起</a>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
             <img width="25" height="25" src="../{{ user.avatar }}" alt="" class="img-rounded">

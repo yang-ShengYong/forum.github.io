@@ -6,10 +6,11 @@
 <section class="container">
   <div class="row">
     <div class="col-md-5">
-      <form>
+      <form action="/topic/new" method="post">
+        <input type="hidden" name="authorId" value="{{ user._id }}">
         <div class="form-group">
-          <label for="exampleInputEmail1">选择板块</label>
-          <select class="form-control">
+          <label for="section">选择板块</label>
+          <select id="section" class="form-control" name="section">
             <option>分享</option>
             <option>问答</option>
             <option>招聘</option>
@@ -17,14 +18,14 @@
           </select>
         </div>
         <div class="form-group">
-          <label for="exampleInputEmail1">标题</label>
-          <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+          <label for="title">标题</label>
+          <input type="text" class="form-control" id="title" name="title" placeholder="文章标题">
         </div>
         <div class="form-group">
-          <label for="exampleInputPassword1">内容</label>
-          <textarea class="form-control" rows="3"></textarea>
+          <label for="content">内容</label>
+          <textarea class="form-control" rows="10" id="content" name="content"></textarea>
         </div>
-        <button type="submit" class="btn btn-default">Submit</button>
+        <button type="submit" class="btn btn-success">Submit</button>
       </form>
     </div>
   </div>

@@ -1,5 +1,6 @@
 var express = require('express')
 var User = require('./models/user') //用大写好区分
+var Topic = require('./models/topic')
 var md5 = require('blueimp-md5')
 var fs = require('fs')
 var path = require('path')
@@ -115,6 +116,7 @@ router.get('/logout', function (req, res) {
 //在主页点设置跳转到 /settings/profile
 router.get('/settings/profile', function (req, res, next) {
   var id = req.query.id
+  id = id.replace(/"/g, "")
 
   User.findById({
     _id: id
@@ -255,6 +257,34 @@ router.get('/settings/admin/delete', function (req, res, next) {
         return next(err)
       }
     })
+    res.redirect('/')
+  })
+})
+
+//在主页点击 发起
+router.get('/topic/new', function (req, res, next) {
+  var id = req.query.id
+
+  User.findById(id, function (err, user) {
+    if (err) {
+      return next(err)
+    }
+    res.render(path.join(__dirname, '/views/topic/new.html'), {
+      user: user
+    })
+  })
+})
+
+//写完文章后点提交
+router.post('/topic/new', function (req, res, next) {
+  var body = req.body
+
+  body.authorId = body.authorId.replace(/"/g, "")
+
+  new Topic(body).save(function (err, topic) {
+    if (err) {
+      return next(err)
+    }
     res.redirect('/')
   })
 })
