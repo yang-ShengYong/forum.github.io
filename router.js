@@ -7,9 +7,15 @@ var path = require('path')
 
 var router = express.Router()
 
-router.get('/', function (req, res) {
-  res.render('index.html', {
-    user: req.session.user
+router.get('/', function (req, res, next) {
+  Topic.find(function (err, topic) {
+    if (err) {
+      return next(err)
+    }
+    res.render('index.html', {
+      user: req.session.user,
+      topic: topic.reverse()
+    })
   })
 })
 
@@ -135,7 +141,7 @@ router.get('/settings/profile', function (req, res, next) {
 //处理基本信息修改之后，点击保存
 router.post('/settings/profile', function (req, res, next) {
   var body = req.body
-  console.log(body)
+
   User.findOneAndUpdate({
     _id: body.id.replace(/"/g, "")
   },
@@ -215,7 +221,7 @@ router.post('/settings/password', function (req, res, next) {
     //把oldPassword取出来，两次MD5加密然后比对
     var oldPassword = req.body.oldPassword
     var md5_oldPassword = md5(md5(oldPassword))
-    console.log(user.password)
+
     if (md5_oldPassword !== user.password) {
       return res.status(200).json({
         err_code: 1,
@@ -252,11 +258,7 @@ router.get('/settings/admin/delete', function (req, res, next) {
         return next(err)
       }
     })
-    req.session.destroy(function (err) {
-      if (err) {
-        return next(err)
-      }
-    })
+    req.session.user = null
     res.redirect('/')
   })
 })
@@ -264,6 +266,8 @@ router.get('/settings/admin/delete', function (req, res, next) {
 //在主页点击 发起
 router.get('/topic/new', function (req, res, next) {
   var id = req.query.id
+
+  id = id.replace(/"/g, "")
 
   User.findById(id, function (err, user) {
     if (err) {

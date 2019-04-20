@@ -1,6 +1,6 @@
 {{extend '../_layouts/home.html'}}
 
-{{block 'title'}}{{'多人博客 - 首页'}}{{/block}}
+{{block 'title'}}{{'ynodejs--写文章'}}{{/block}}
 
 {{block 'body'}}
 <section class="container">
@@ -8,6 +8,8 @@
     <div class="col-md-5">
       <form action="/topic/new" method="post">
         <input type="hidden" name="authorId" value="{{ user._id }}">
+        <input type="hidden" name="authorNickname" value="{{ user.nickname }}">
+        <input type="hidden" name="authorAvatar" value="{{ user.avatar }}">
         <div class="form-group">
           <label for="section">选择板块</label>
           <select id="section" class="form-control" name="section">

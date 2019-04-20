@@ -25,6 +25,14 @@ var topicSchema = new Schema({
   authorId: {
     type: String,
     required: true
+  },
+  authorNickname: {
+    type: String,
+    required: true
+  },
+  authorAvatar: {
+    type: String,
+    required: true
   }
 })
 
