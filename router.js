@@ -12,9 +12,17 @@ router.get('/', function (req, res, next) {
     if (err) {
       return next(err)
     }
+    
+    var topicLen = topic.length
+    var totalPages = Math.ceil(topicLen / 20)
+    var startCut = topicLen - 20
+    var newTopic = topic.splice(startCut)
+    
     res.render('index.html', {
       user: req.session.user,
-      topic: topic.reverse()
+      topic: newTopic.reverse(),
+      totalPages: totalPages,
+      currentPage: 1
     })
   })
 })
@@ -180,7 +188,7 @@ router.post('/settings/profile/avatar', function (req, res, next) {
       if (err) {
         return next(err)
       }
-     
+
       User.findById(id, function (err, user) {
         if (err) {
           return next(err)
@@ -290,6 +298,43 @@ router.post('/topic/new', function (req, res, next) {
       return next(err)
     }
     res.redirect('/')
+  })
+})
+
+//处理分页请求
+router.get('/page', function (req, res, next) {
+  var page_num = req.query.page_num
+
+  Topic.find(function (err, topic) {
+    if (err) {
+      return next(err)
+    }
+    var topicLen = topic.length
+    var totalPages = Math.ceil(topicLen / 20)
+
+    if (page_num >= totalPages) {
+      var startCut = 0
+      var cutLen = topicLen % 20
+
+      var newTopic = topic.splice(startCut, cutLen)
+
+      res.render('index.html', {
+        user: req.session.user,
+        topic: newTopic.reverse(),
+        totalPages: totalPages,
+        currentPage: page_num
+      })
+    } else {
+      var startCut = topicLen - 20 * page_num
+      var  newTopic = topic.splice(startCut, 20)
+
+      res.render('index.html', {
+        user: req.session.user,
+        topic: newTopic.reverse(),
+        totalPages: totalPages,
+        currentPage: page_num
+      })
+    }
   })
 })
 
