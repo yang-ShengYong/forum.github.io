@@ -33,6 +33,18 @@ var topicSchema = new Schema({
   authorAvatar: {
     type: String,
     required: true
+  },
+  stars: {
+    type: Number,
+    default: 0
+  },
+  reply: {
+    type: Number,
+    default: 0
+  },
+  view_count: {
+    type: Number,
+    default: 0
   }
 })
 

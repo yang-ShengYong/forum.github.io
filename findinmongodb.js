@@ -14,5 +14,5 @@ var Topic = require('./models/topic')
 // Topic.find({
 //   authorId: '5cb83e46d1e44e43383c1375'
 // }, function (err, topic) {
-//   console.log(topic)
+//   console.log(topic[0].created_time.getTime())
 // })

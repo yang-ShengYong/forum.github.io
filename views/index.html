@@ -2,13 +2,30 @@
 
 {{block 'title'}}{{'ynodejs--论坛首页'}}{{/block}}
 
+{{ block 'head' }}
+<style>
+li.media
+{
+padding: 5px;
+border-radius:5px;
+-moz-border-radius:5px; /* Old Firefox */
+background-color: #fff;
+}
+</style>
+{{ /block }}
+
 {{block 'body'}}
 <section class="container">
-  <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">全部 分享 问答 招聘 客户端测试</h3>
+      <ul class="nav nav-pills">
+          <li role="presentation" class="active"><a href="#">全部</a></li>
+          <li role="presentation"><a href="#">分享</a></li>
+          <li role="presentation"><a href="#">问答</a></li>
+          <li role="presentation"><a href="#">招聘</a></li>
+          <li role="presentation"><a href="#">客户端测试</a></li>
+      </ul>
     </div>
-    <div class="panel-body">
+    <div class="">
       <ul class="media-list">
         {{ each topic }}
         <li class="media">
@@ -20,7 +37,10 @@
           <div class="media-body">
             <h4 class="media-heading"><a href="/topics/123">{{ $value.title }}</a></h4>
             <p>{{ $value.content }}</p>
-            <p>sueysok 回复了问题 • 2 人关注 • 1 个回复 • 187 次浏览 • {{ $value.created_time }}</p>
+            <p>{{ $value.stars }}人关注&nbsp; {{ $value.reply }}人回复&nbsp; {{ $value.view_count }}浏览</p>
+            <p>发布日期： {{ $value.created_time.getFullYear() }}-{{ $value.created_time.getMonth()+1 }}-{{ $value.created_time.getDate() }} 
+              {{ $value.created_time.getHours() }}:{{ $value.created_time.getMinutes() }}:{{ $value.created_time.getSeconds() }}
+            </p>
           </div>
         </li>
         {{ /each }}
@@ -38,7 +58,7 @@
     </li> -->
       </ul>
     </div>
-  </div>
+  
   <nav aria-label="Page navigation">
     <!-- <ul class="pagination">
       <li>
